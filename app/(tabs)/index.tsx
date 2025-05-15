@@ -19,11 +19,12 @@ const SECONDS_TO_SCAN_FOR = 3;
 const SERVICE_UUIDS: string[] = ["0x180D"];
 const ALLOW_DUPLICATES = false;
 
-export default function HomeScreen() {
+export default function HeartRateScreen() {
   const [isScanning, setIsScanning] = useState(false);
   const [peripherals, setPeripherals] = useState(
     new Map<Peripheral["id"], Peripheral>()
   );
+  console.log("peripherals", peripherals);
 
   const startScan = () => {
     if (!isScanning) {

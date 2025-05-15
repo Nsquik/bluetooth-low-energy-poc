@@ -1,10 +1,8 @@
 import { Icon } from "@/components/Icon";
-import TabBarBackground from "@/components/TabBarBackground";
 import { Touchable } from "@/components/Touchable";
 import { useThemeColor } from "@/hooks/useThemeColor";
 import { Tabs } from "expo-router";
 import React from "react";
-import { Platform } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 function HapticTab({ ...props }) {
@@ -13,43 +11,35 @@ function HapticTab({ ...props }) {
 
 export default function TabLayout() {
   const tintColor = useThemeColor({}, "tint");
-  const { top, bottom, left, right } = useSafeAreaInsets();
+  const { left, right } = useSafeAreaInsets();
 
   return (
     <Tabs
       screenOptions={{
         sceneStyle: {
-          paddingTop: top,
-          paddingBottom: bottom,
-          paddingLeft: left,
-          paddingRight: right,
+          paddingLeft: left + 10,
+          paddingRight: right + 10,
         },
         tabBarActiveTintColor: tintColor,
         headerShown: false,
         tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
-        tabBarStyle: Platform.select({
-          ios: {
-            // Use a transparent background on iOS to show the blur effect
-            position: "absolute",
-          },
-          default: {},
-        }),
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: "Home",
+          headerShown: true,
+          title: "Heart Rate",
           tabBarIcon: ({ color }) => (
             <Icon size={28} name="house.fill" color={color} />
           ),
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="device"
         options={{
-          title: "Explore",
+          headerShown: true,
+          title: "Device",
           tabBarIcon: ({ color }) => (
             <Icon size={28} name="paperplane.fill" color={color} />
           ),
