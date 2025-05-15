@@ -13,9 +13,12 @@ export function PeripheralList({
   title,
   loading,
   onPress,
+  style,
 }: PeripheralListProps) {
+  const isEmpty = !data.length && !loading;
   const { color } = useTheme();
 
+  const isEmptyText = isEmpty ? "(Not found)" : null;
   const connectingIndicator = (
     <ThemedView
       style={[{ backgroundColor: color.card }, styles.connectingContainer]}
@@ -45,7 +48,7 @@ export function PeripheralList({
     const name = item?.advertising?.localName || item.name;
 
     const handlePressItem = () => {
-      onPress(item);
+      onPress?.(item);
     };
 
     return (
@@ -69,14 +72,17 @@ export function PeripheralList({
           textTransform="uppercase"
           style={styles.titleText}
         >
-          {title}
+          {title} {isEmptyText}
         </ThemedText>
         {loading ? <Loader /> : null}
       </ThemedView>
       <FlatList
-        style={{
-          flex: 1,
-        }}
+        style={[
+          {
+            flex: 0,
+          },
+          style,
+        ]}
         data={data}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
