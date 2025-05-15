@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import {
   FlatList,
   Pressable,
-  ScrollView,
   StyleSheet,
   TouchableHighlight,
 } from "react-native";
@@ -106,7 +105,7 @@ export default function HomeScreen() {
   };
 
   return (
-    <ScrollView>
+    <ThemedView>
       <ThemedView style={styles.titleContainer}>
         <Pressable onPress={startScan}>
           <ThemedText>
@@ -120,7 +119,7 @@ export default function HomeScreen() {
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
       />
-    </ScrollView>
+    </ThemedView>
   );
 }
 
@@ -140,17 +139,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: "absolute",
   },
   row: {
     padding: 10,
