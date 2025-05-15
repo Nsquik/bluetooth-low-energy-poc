@@ -1,64 +1,144 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { ThemedText } from "@/components/ThemedText";
+import { ThemedView } from "@/components/ThemedView";
+import { Colors } from "@/constants/Colors";
+import { useEffect, useState } from "react";
+import {
+  FlatList,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  TouchableHighlight,
+} from "react-native";
+import BleManager, {
+  BleScanCallbackType,
+  BleScanMatchMode,
+  BleScanMode,
+  Peripheral,
+} from "react-native-ble-manager";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+const SECONDS_TO_SCAN_FOR = 3;
+const SERVICE_UUIDS: string[] = ["0x180D"];
+const ALLOW_DUPLICATES = false;
 
 export default function HomeScreen() {
+  const [isScanning, setIsScanning] = useState(false);
+  const [peripherals, setPeripherals] = useState(
+    new Map<Peripheral["id"], Peripheral>()
+  );
+
+  const startScan = () => {
+    if (!isScanning) {
+      // reset found peripherals before scan
+      setPeripherals(new Map<Peripheral["id"], Peripheral>());
+
+      try {
+        setIsScanning(true);
+        BleManager.scan(SERVICE_UUIDS, SECONDS_TO_SCAN_FOR, ALLOW_DUPLICATES, {
+          matchMode: BleScanMatchMode.Sticky,
+          scanMode: BleScanMode.LowLatency,
+          callbackType: BleScanCallbackType.AllMatches,
+        }).catch((err: any) => {
+          console.error("[startScan] ble scan returned in error", err);
+        });
+      } catch (error) {
+        console.error("[startScan] ble scan error thrown", error);
+      }
+    }
+  };
+
+  const handleStopScan = () => {
+    setIsScanning(false);
+  };
+
+  const handleDiscoverPeripheral = (peripheral: Peripheral) => {
+    if (!peripheral.name) {
+      peripheral.name = "NO NAME";
+    }
+    setPeripherals((map) => {
+      return new Map(map.set(peripheral.id, peripheral));
+    });
+  };
+
+  useEffect(() => {
+    try {
+      BleManager.start({ showAlert: true })
+        .then(() => console.debug("BleManager started."))
+        .catch((error: any) =>
+          console.error("BeManager could not be started.", error)
+        );
+    } catch (error) {
+      console.error("unexpected error starting BleManager.", error);
+      return;
+    }
+
+    const listeners: any[] = [
+      BleManager.onDiscoverPeripheral(handleDiscoverPeripheral),
+      BleManager.onStopScan(handleStopScan),
+    ];
+
+    return () => {
+      console.debug("[app] main component unmounting. Removing listeners...");
+      for (const listener of listeners) {
+        listener.remove();
+      }
+    };
+  }, []);
+
+  const renderItem = ({
+    item,
+  }: {
+    item: Peripheral & { connected?: boolean; connecting?: boolean };
+  }) => {
+    const backgroundColor = item?.connected ? "#069400" : Colors.dark.icon;
+    return (
+      <TouchableHighlight underlayColor="#0082FC" onPress={() => null}>
+        <ThemedView style={[styles.row, { backgroundColor }]}>
+          <ThemedText>
+            {/* completeLocalName (item.name) & shortAdvertisingName (advertising.localName) may not always be the same */}
+            {item.name} - {item?.advertising?.localName}
+            {item.connecting && " - Connecting..."}
+          </ThemedText>
+          <ThemedText>RSSI: {item.rssi}</ThemedText>
+          <ThemedText>{item.id}</ThemedText>
+        </ThemedView>
+      </TouchableHighlight>
+    );
+  };
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
+    <ScrollView>
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
+        <Pressable onPress={startScan}>
+          <ThemedText>
+            {isScanning ? "Scanning..." : "Scan Bluetooth"}
+          </ThemedText>
+        </Pressable>
       </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+      <FlatList
+        data={Array.from(peripherals.values())}
+        contentContainerStyle={{ rowGap: 12 }}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+      />
+    </ScrollView>
   );
 }
 
+const boxShadow = {
+  shadowColor: "#000",
+  shadowOffset: {
+    width: 0,
+    height: 2,
+  },
+  shadowOpacity: 0.25,
+  shadowRadius: 3.84,
+  elevation: 5,
+};
+
 const styles = StyleSheet.create({
   titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 8,
   },
   stepContainer: {
@@ -70,6 +150,29 @@ const styles = StyleSheet.create({
     width: 290,
     bottom: 0,
     left: 0,
-    position: 'absolute',
+    position: "absolute",
+  },
+  row: {
+    padding: 10,
+    marginLeft: 10,
+    marginRight: 10,
+    borderRadius: 20,
+    ...boxShadow,
+  },
+  rssi: {
+    fontSize: 12,
+    textAlign: "center",
+    padding: 2,
+  },
+  peripheralName: {
+    fontSize: 16,
+    textAlign: "center",
+    padding: 10,
+  },
+  peripheralId: {
+    fontSize: 12,
+    textAlign: "center",
+    padding: 2,
+    paddingBottom: 20,
   },
 });
