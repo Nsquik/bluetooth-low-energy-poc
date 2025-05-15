@@ -14,7 +14,7 @@ export function ThemedText({
   type = "default",
   ...rest
 }: ThemedTextProps) {
-  const color = useTheme().colors.text;
+  const color = useTheme().color.text;
 
   return (
     <Text

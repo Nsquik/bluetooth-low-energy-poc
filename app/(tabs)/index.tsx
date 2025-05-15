@@ -1,13 +1,9 @@
+import { Button } from "@/components/Button";
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
 import { useTheme } from "@/hooks/useTheme";
 import { useEffect, useState } from "react";
-import {
-  FlatList,
-  Pressable,
-  StyleSheet,
-  TouchableHighlight,
-} from "react-native";
+import { FlatList, StyleSheet, TouchableHighlight } from "react-native";
 import BleManager, {
   BleScanCallbackType,
   BleScanMatchMode,
@@ -90,10 +86,9 @@ export default function HeartRateScreen() {
   }: {
     item: Peripheral & { connected?: boolean; connecting?: boolean };
   }) => {
-    const backgroundColor = item?.connected ? "#069400" : color.icon;
     return (
       <TouchableHighlight underlayColor="#0082FC" onPress={() => null}>
-        <ThemedView style={[styles.row, { backgroundColor }]}>
+        <ThemedView style={[styles.row, { backgroundColor: "red" }]}>
           <ThemedText>
             {/* completeLocalName (item.name) & shortAdvertisingName (advertising.localName) may not always be the same */}
             {item.name} - {item?.advertising?.localName}
@@ -108,13 +103,13 @@ export default function HeartRateScreen() {
 
   return (
     <ThemedView>
-      <ThemedView style={styles.titleContainer}>
-        <Pressable onPress={startScan}>
-          <ThemedText>
-            {isScanning ? "Scanning..." : "Scan Bluetooth"}
-          </ThemedText>
-        </Pressable>
-      </ThemedView>
+      <Button
+        text={isScanning ? "Scanning..." : "Scan Bluetooth"}
+        onPress={startScan}
+      />
+
+      <ThemedText>Lorem ipsum</ThemedText>
+
       <FlatList
         data={Array.from(peripherals.values())}
         contentContainerStyle={{ rowGap: 12 }}

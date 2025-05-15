@@ -1,8 +1,8 @@
 import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
+  NAVIGATION_DARK_THEME,
+  NAVIGATION_LIGHT_THEME,
+} from "@/constants/Theme";
+import { ThemeProvider } from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -22,7 +22,13 @@ export default function RootLayout() {
 
   return (
     <SafeAreaProvider>
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+      <ThemeProvider
+        value={
+          colorScheme === "dark"
+            ? NAVIGATION_DARK_THEME
+            : NAVIGATION_LIGHT_THEME
+        }
+      >
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" />
