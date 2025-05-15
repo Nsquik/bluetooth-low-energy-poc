@@ -1,10 +1,18 @@
 import { useTheme } from "@/hooks/useTheme";
-import { StyleSheet, Text, type TextProps } from "react-native";
+import { StyleSheet, Text, TextStyle, type TextProps } from "react-native";
 
 export type ThemedTextProps = TextProps & {
   lightColor?: string;
   darkColor?: string;
-  type?: "default" | "title" | "defaultSemiBold" | "subtitle" | "link";
+  textTransform?: TextStyle["textTransform"];
+  type?:
+    | "default"
+    | "small"
+    | "medium"
+    | "title"
+    | "defaultSemiBold"
+    | "subtitle"
+    | "link";
 };
 
 export function ThemedText({
@@ -12,6 +20,7 @@ export function ThemedText({
   lightColor,
   darkColor,
   type = "default",
+  textTransform,
   ...rest
 }: ThemedTextProps) {
   const color = useTheme().color.text;
@@ -19,8 +28,10 @@ export function ThemedText({
   return (
     <Text
       style={[
+        { textTransform },
         { color },
         type === "default" ? styles.default : undefined,
+        type === "small" ? styles.small : undefined,
         type === "title" ? styles.title : undefined,
         type === "defaultSemiBold" ? styles.defaultSemiBold : undefined,
         type === "subtitle" ? styles.subtitle : undefined,
@@ -41,6 +52,16 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 24,
     fontWeight: "600",
+  },
+  small: {
+    fontSize: 10,
+    fontWeight: "bold",
+    lineHeight: 24,
+  },
+  medium: {
+    fontSize: 14,
+    fontWeight: "bold",
+    lineHeight: 24,
   },
   title: {
     fontSize: 32,

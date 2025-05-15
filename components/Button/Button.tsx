@@ -9,12 +9,13 @@ export function Button({
   size = "default",
   text,
   onPress,
+  style,
   ...touchableProps
 }: ButtonProps) {
   const { color } = useTheme();
   return (
     <Touchable
-      style={[{ backgroundColor: color.primary }, styles.container]}
+      style={[{ backgroundColor: color.primary }, styles.container, style]}
       onPress={onPress}
       {...touchableProps}
     >

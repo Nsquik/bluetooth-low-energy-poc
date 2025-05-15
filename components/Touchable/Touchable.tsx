@@ -2,14 +2,15 @@ import {
   ImpactFeedbackStyle,
   impactAsync as triggerHaptics,
 } from "expo-haptics";
-import { Pressable } from "react-native";
+import { TouchableOpacity } from "react-native";
 import { TouchableProps } from "./Touchable.types";
 import { mapHapticStrength } from "./Touchable.utils";
 
 export function Touchable(props: TouchableProps) {
   return (
-    <Pressable
+    <TouchableOpacity
       {...props}
+      activeOpacity={0.8}
       onPressIn={(ev) => {
         if (props.haptic) {
           const hapticStrength =

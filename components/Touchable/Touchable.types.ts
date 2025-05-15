@@ -1,7 +1,7 @@
 import { ImpactFeedbackStyle } from "expo-haptics";
-import { PressableProps } from "react-native";
+import { TouchableOpacityProps } from "react-native";
 
-export type TouchableProps = PressableProps & {
+export type TouchableProps = TouchableOpacityProps & {
   haptic?: "soft" | "medium" | "heavy";
 };
 
