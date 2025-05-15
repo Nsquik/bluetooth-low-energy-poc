@@ -1,6 +1,7 @@
 import { Icon } from "@/components/Icon";
 import { Touchable } from "@/components/Touchable";
-import { useThemeColor } from "@/hooks/useThemeColor";
+import { SPACING } from "@/constants/Token";
+import { useTheme } from "@/hooks/useTheme";
 import { Tabs } from "expo-router";
 import React from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -10,15 +11,15 @@ function HapticTab({ ...props }) {
 }
 
 export default function TabLayout() {
-  const tintColor = useThemeColor({}, "tint");
+  const tintColor = useTheme().color.tint;
   const { left, right } = useSafeAreaInsets();
 
   return (
     <Tabs
       screenOptions={{
         sceneStyle: {
-          paddingLeft: left + 10,
-          paddingRight: right + 10,
+          paddingLeft: left + SPACING.sm,
+          paddingRight: right + SPACING.sm,
         },
         tabBarActiveTintColor: tintColor,
         headerShown: false,

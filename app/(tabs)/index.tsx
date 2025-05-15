@@ -1,6 +1,6 @@
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
-import { Colors } from "@/constants/Colors";
+import { useTheme } from "@/hooks/useTheme";
 import { useEffect, useState } from "react";
 import {
   FlatList,
@@ -20,6 +20,7 @@ const SERVICE_UUIDS: string[] = ["0x180D"];
 const ALLOW_DUPLICATES = false;
 
 export default function HeartRateScreen() {
+  const { color } = useTheme();
   const [isScanning, setIsScanning] = useState(false);
   const [peripherals, setPeripherals] = useState(
     new Map<Peripheral["id"], Peripheral>()
@@ -89,7 +90,7 @@ export default function HeartRateScreen() {
   }: {
     item: Peripheral & { connected?: boolean; connecting?: boolean };
   }) => {
-    const backgroundColor = item?.connected ? "#069400" : Colors.dark.icon;
+    const backgroundColor = item?.connected ? "#069400" : color.icon;
     return (
       <TouchableHighlight underlayColor="#0082FC" onPress={() => null}>
         <ThemedView style={[styles.row, { backgroundColor }]}>
