@@ -4,4 +4,5 @@ export type ButtonProps = TouchableProps & {
   text: string;
   size?: "default" | "large";
   onPress: () => void;
+  loading?: boolean;
 };

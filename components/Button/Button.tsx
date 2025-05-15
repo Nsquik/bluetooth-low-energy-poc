@@ -1,6 +1,7 @@
 import { SPACING } from "@/constants/Token";
 import { useTheme } from "@/hooks/useTheme";
 import { StyleSheet } from "react-native";
+import { Loader } from "../Loader";
 import { ThemedText } from "../ThemedText";
 import { Touchable } from "../Touchable";
 import { ButtonProps } from "./Button.types";
@@ -10,6 +11,7 @@ export function Button({
   text,
   onPress,
   style,
+  loading,
   ...touchableProps
 }: ButtonProps) {
   const { color } = useTheme();
@@ -20,6 +22,7 @@ export function Button({
       {...touchableProps}
     >
       <ThemedText>{text}</ThemedText>
+      {loading ? <Loader style={styles.loader} size={"small"} /> : null}
     </Touchable>
   );
 }
@@ -29,6 +32,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: SPACING.md,
     paddingVertical: SPACING.lg,
     borderRadius: SPACING.md,
-    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+  },
+  loader: {
+    position: "absolute",
+    right: SPACING.xl,
+    top: "50%",
+    bottom: "50%",
+    marginLeft: SPACING.sm,
   },
 });
