@@ -25,7 +25,8 @@ export type UseBluetooth = {
   connectedPeripheral?: Peripheral;
   getCharacteristic: (
     peripheral: Peripheral,
-    findPredicate: (characteristic: Characteristic) => boolean
+    findPredicate: (characteristic: Characteristic) => boolean,
+    serviceUUIDs: string[]
   ) => Promise<Characteristic | undefined>;
   subscribeCharacteristic: (
     peripheralId: string,

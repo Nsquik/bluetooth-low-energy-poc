@@ -6,7 +6,7 @@ import React from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 function HapticTab({ ...props }) {
-  return <Touchable {...props} haptic="heavy" />;
+  return <Touchable {...props} haptic="medium" />;
 }
 
 export default function TabLayout() {

@@ -2,15 +2,13 @@ import { Button } from "@/components/Button";
 import { InfoAction } from "@/components/InfoAction";
 import { PeripheralList } from "@/components/PeripheralList";
 import { ThemedView } from "@/components/ThemedView";
+import { HEART_RATE_SERVICES } from "@/constants/Services";
 import { SPACING } from "@/constants/Token";
-import {
-  useBluetooth,
-  UseBluetoothCharacteristicUpdateEvent,
-} from "@/hooks/useBluetooth";
-import { useCallback, useEffect } from "react";
+import { useBluetooth } from "@/hooks/useBluetooth";
+import { useEffect } from "react";
 import { StyleSheet } from "react-native";
 
-const SERVICE_UUIDS: string[] = ["180D"];
+const SERVICE_UUIDS: string[] = [HEART_RATE_SERVICES.Monitor];
 
 export default function DeviceScreen() {
   const {
@@ -20,8 +18,6 @@ export default function DeviceScreen() {
     permissionStatus,
     connectedPeripheral,
     availablePeripherals,
-    getCharacteristic,
-    subscribeCharacteristic,
     enableBluetooth,
     requestPermissions,
     connectPeripheral,
@@ -30,40 +26,11 @@ export default function DeviceScreen() {
     serviceUUIDs: SERVICE_UUIDS,
     allowDuplicates: false,
     scanSeconds: 3,
-    onCharacteristicUpdate: onCharacteristicUpdate,
   });
-
-  function onCharacteristicUpdate(ev: UseBluetoothCharacteristicUpdateEvent) {
-    console.log(ev);
-  }
 
   useEffect(() => {
     scanPeripherals();
   }, [scanPeripherals]);
-
-  const subscribeChar = useCallback(async () => {
-    if (connectedPeripheral) {
-      const characteristic = await getCharacteristic(
-        connectedPeripheral,
-        (c) =>
-          c.service === "180d" &&
-          Boolean(c.properties.Notify) &&
-          c.characteristic === "2a37"
-      );
-
-      if (characteristic) {
-        subscribeCharacteristic(
-          connectedPeripheral.id,
-          characteristic.service,
-          characteristic.characteristic
-        );
-      }
-    }
-  }, [connectedPeripheral, getCharacteristic, subscribeCharacteristic]);
-
-  useEffect(() => {
-    subscribeChar();
-  }, [subscribeChar]);
 
   return (
     <ThemedView style={styles.container}>
