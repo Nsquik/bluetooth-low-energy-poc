@@ -8,6 +8,7 @@ import BleManager, {
   BleState,
 } from "react-native-ble-manager";
 import { UseBluetooth, UseBluetoothProps } from "./useBluetooth.types";
+import { mapPeripheral } from "./useBluetooth.utils";
 
 const SECONDS_TO_SCAN_FOR = 3;
 const SERVICE_UUIDS: string[] = [];
@@ -24,30 +25,14 @@ export function useBluetooth({
     Map<string, Peripheral>
   >(new Map());
   const [connectedPeripheral, setConnectedPeripheral] = useState<Peripheral>();
-  const isReady = state === BleState.On;
-
-  useEffect(() => {
-    initBluetoothManager();
-  }, []);
 
   const initBluetoothManager = async () => {
     try {
       await BleManager.start({ showAlert: true });
+      await BleManager.checkState();
     } catch (e) {
       console.log("Couldn't start bluetooth manager", e);
     }
-  };
-
-  const mapPeripheral = (
-    peripheral: Peripheral,
-    overrides: Partial<Peripheral> = {}
-  ): Peripheral => {
-    return {
-      ...peripheral,
-      connected: false,
-      connecting: false,
-      ...overrides,
-    };
   };
 
   const addConnectedPeripheral = useCallback((peripheral: Peripheral) => {
@@ -55,14 +40,6 @@ export function useBluetooth({
 
     setConnectedPeripheral(connectedPeripheral);
   }, []);
-
-  const removeAvailablePeripheral = (peripheral: Peripheral) => {
-    setAvailablePeripherals((prevMap) => {
-      const newMap = new Map(prevMap);
-      newMap.delete(peripheral.id);
-      return newMap;
-    });
-  };
 
   const addAvailablePeripheral = useCallback((peripheral: Peripheral) => {
     const name = peripheral.name ?? "NO NAME";
@@ -75,6 +52,14 @@ export function useBluetooth({
       return newMap;
     });
   }, []);
+
+  const removeAvailablePeripheral = (peripheral: Peripheral) => {
+    setAvailablePeripherals((prevMap) => {
+      const newMap = new Map(prevMap);
+      newMap.delete(peripheral.id);
+      return newMap;
+    });
+  };
 
   const setAvailablePeripheralConnecting = (
     peripheral: Peripheral,
@@ -90,13 +75,11 @@ export function useBluetooth({
   };
 
   const scanPeripherals = useCallback(async () => {
-    setAvailablePeripherals(new Map());
-
+    const isReady = state === BleState.On;
     if (isReady) {
+      setAvailablePeripherals(new Map());
       setIsScanning(true);
-      const connectedPeripherals = await BleManager.getConnectedPeripherals(
-        serviceUUIDs
-      );
+      const connectedPeripherals = await BleManager.getConnectedPeripherals([]);
       setConnectedPeripheral(undefined);
 
       if (connectedPeripherals.length) {
@@ -110,11 +93,13 @@ export function useBluetooth({
       });
     }
   }, [
-    addConnectedPeripheral,
-    allowDuplicates,
-    isReady,
-    scanSeconds,
+    state,
     serviceUUIDs,
+    scanSeconds,
+    allowDuplicates,
+    addConnectedPeripheral,
+    setConnectedPeripheral,
+    setAvailablePeripherals,
   ]);
 
   const connectPeripheral = async (peripheral: Peripheral) => {
@@ -142,6 +127,10 @@ export function useBluetooth({
   const handleStopScan = () => {
     setIsScanning(false);
   };
+
+  useEffect(() => {
+    initBluetoothManager();
+  }, []);
 
   useEffect(() => {
     const listeners: EventSubscription[] = [

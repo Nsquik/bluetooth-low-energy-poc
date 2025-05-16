@@ -1,12 +1,12 @@
 import { Button } from "@/components/Button";
-import { PeripheralList } from "@/components/PeripheralList/PeripheralList";
+import { PeripheralList } from "@/components/PeripheralList";
 import { ThemedView } from "@/components/ThemedView";
 import { SPACING } from "@/constants/Token";
-import { useBluetooth } from "@/hooks/useBluetooth/useBluetooth";
+import { useBluetooth } from "@/hooks/useBluetooth";
 import { useEffect } from "react";
 import { StyleSheet } from "react-native";
 
-const SERVICE_UUIDS: string[] = ["0x180D"];
+const SERVICE_UUIDS: string[] = ["180D"];
 
 export default function DeviceScreen() {
   const {

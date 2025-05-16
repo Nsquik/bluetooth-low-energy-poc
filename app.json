@@ -47,7 +47,15 @@
           "backgroundColor": "#ffffff"
         }
       ],
-      "react-native-ble-manager"
+      [
+        "react-native-ble-manager",
+        {
+          "neverForLocation": true,
+          "companionDeviceEnabled": false,
+          "isBleRequired": true,
+          "bluetoothAlwaysPermission": "Allow $(PRODUCT_NAME) to connect to bluetooth devices"
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
