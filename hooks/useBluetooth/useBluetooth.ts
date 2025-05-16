@@ -6,6 +6,7 @@ import BleManager, {
   BleScanMatchMode,
   BleScanMode,
   BleState,
+  Characteristic,
 } from "react-native-ble-manager";
 import { useBluetoothPermissions } from "../useBluetoothPermissions";
 import { UseBluetooth, UseBluetoothProps } from "./useBluetooth.types";
@@ -19,6 +20,7 @@ export function useBluetooth({
   scanSeconds = SECONDS_TO_SCAN_FOR,
   serviceUUIDs = SERVICE_UUIDS,
   allowDuplicates = ALLOW_DUPLICATES,
+  onCharacteristicUpdate,
 }: UseBluetoothProps = {}): UseBluetooth {
   const [isScanning, setIsScanning] = useState(false);
   const [hasScanned, setHasScanned] = useState(false);
@@ -135,6 +137,44 @@ export function useBluetooth({
     }
   };
 
+  const getCharacteristic = async (
+    peripheral: Peripheral,
+    find: (characteristic: Characteristic) => boolean
+  ): Promise<Characteristic | undefined> => {
+    if (peripheral.connected) {
+      const services = await BleManager.retrieveServices(
+        peripheral.id,
+        serviceUUIDs
+      );
+
+      return services.characteristics?.find(find);
+    }
+  };
+
+  const subscribeCharacteristic = async (
+    peripheralId: string,
+    serviceUUID: string,
+    charateristicUUID: string
+  ) => {
+    return await BleManager.startNotification(
+      peripheralId,
+      serviceUUID,
+      charateristicUUID
+    );
+  };
+
+  const unsubscribeCharacteristic = async (
+    peripheralId: string,
+    serviceUUID: string,
+    charateristicUUID: string
+  ) => {
+    return await BleManager.stopNotification(
+      peripheralId,
+      serviceUUID,
+      charateristicUUID
+    );
+  };
+
   const enableBluetooth = async () => {
     if (Platform.OS === "android") {
       await BleManager.enableBluetooth();
@@ -174,6 +214,7 @@ export function useBluetooth({
   useEffect(() => {
     const listeners: EventSubscription[] = [
       BleManager.onDidUpdateState(handleBluetoothManagerStateChange),
+      BleManager.onDidUpdateValueForCharacteristic(onCharacteristicUpdate),
       BleManager.onDiscoverPeripheral(handleDiscoverPeripheral),
       BleManager.onStopScan(handleStopScan),
     ];
@@ -183,7 +224,11 @@ export function useBluetooth({
         listener.remove();
       }
     };
-  }, [handleBluetoothManagerStateChange, handleDiscoverPeripheral]);
+  }, [
+    handleBluetoothManagerStateChange,
+    handleDiscoverPeripheral,
+    onCharacteristicUpdate,
+  ]);
 
   return {
     isAvailable,
@@ -192,43 +237,12 @@ export function useBluetooth({
     permissionStatus,
     availablePeripherals,
     connectedPeripheral,
+    getCharacteristic,
+    subscribeCharacteristic,
+    unsubscribeCharacteristic,
     enableBluetooth,
     requestPermissions,
     scanPeripherals,
     connectPeripheral,
   };
 }
-
-// const retrieveServices = async () => {
-//   const peripheralInfos: PeripheralInfo[] = [];
-//   for (const [peripheralId, peripheral] of connectedPeripherals) {
-//     if (peripheral.connected) {
-//       const newPeripheralInfo = await BleManager.retrieveServices(
-//         peripheralId
-//       );
-
-//       peripheralInfos.push(newPeripheralInfo);
-//     }
-//   }
-
-//   return peripheralInfos;
-// };
-
-// const readCharacteristics = async () => {
-//   const services = await retrieveServices();
-
-//   for (const peripheralInfo of services) {
-//     peripheralInfo.characteristics?.forEach(async (c) => {
-//       if (c.properties.Notify && c.characteristic === "2a37") {
-//         console.log(peripheralInfo.id, c.characteristic, c.service);
-//         BleManager.startNotification(
-//           peripheralInfo.id,
-//           c.service,
-//           c.characteristic
-//         ).then(() => {
-//           console.log("started notifying");
-//         });
-//       }
-//     });
-//   }
-// };
