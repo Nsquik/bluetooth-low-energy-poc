@@ -1,16 +1,16 @@
 {
   "expo": {
-    "name": "bluetooth-low-energy-poc",
-    "slug": "bluetooth-low-energy-poc",
+    "name": "Heart Rate Monitor",
+    "slug": "heart-rate-monitor",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "bluetoothlowenergypoc",
+    "scheme": "heartratemonitor",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.nsquik.bluetoothlowenergypoc",
+      "bundleIdentifier": "com.nsquik.heartratemonitor",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": false
       }
@@ -24,12 +24,9 @@
       "permissions": [
         "android.permission.BLUETOOTH",
         "android.permission.BLUETOOTH_ADMIN",
-        "android.permission.BLUETOOTH_CONNECT",
-        "android.permission.BLUETOOTH",
-        "android.permission.BLUETOOTH_ADMIN",
         "android.permission.BLUETOOTH_CONNECT"
       ],
-      "package": "com.nsquik.bluetoothlowenergypoc"
+      "package": "com.nsquik.heartratemonitor"
     },
     "web": {
       "bundler": "metro",
@@ -66,9 +63,7 @@
         "projectId": "780d640d-8b8d-4b2b-bd0e-5a1c112a79ff"
       }
     },
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
+    "runtimeVersion": "1.0.0",
     "updates": {
       "url": "https://u.expo.dev/780d640d-8b8d-4b2b-bd0e-5a1c112a79ff"
     }
