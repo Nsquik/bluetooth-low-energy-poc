@@ -31,7 +31,7 @@ export function useBluetooth({
       alertOnDenied: true,
     });
 
-  const initBluetoothManager = async () => {
+  const initBluetoothManager = useCallback(async () => {
     try {
       await BleManager.start({ showAlert: true });
       await BleManager.checkState();
@@ -39,7 +39,7 @@ export function useBluetooth({
     } catch (e) {
       console.log("Couldn't start bluetooth manager", e);
     }
-  };
+  }, [requestPermissions]);
 
   const addConnectedPeripheral = useCallback((peripheral: Peripheral) => {
     const connectedPeripheral = mapPeripheral(peripheral, { connected: true });
@@ -143,7 +143,7 @@ export function useBluetooth({
 
   useEffect(() => {
     initBluetoothManager();
-  }, []);
+  }, [initBluetoothManager]);
 
   useEffect(() => {
     const listeners: EventSubscription[] = [
