@@ -10,19 +10,21 @@ export function ThemedText({
   textTransform,
   ...rest
 }: ThemedTextProps) {
-  const color = useTheme().color.text;
+  const {
+    color: { text, accent },
+  } = useTheme();
 
   return (
     <Text
       style={[
         { textTransform },
-        { color },
+        { color: text },
         type === "default" ? styles.default : undefined,
         type === "small" ? styles.small : undefined,
         type === "title" ? styles.title : undefined,
         type === "defaultSemiBold" ? styles.defaultSemiBold : undefined,
         type === "subtitle" ? styles.subtitle : undefined,
-        type === "link" ? styles.link : undefined,
+        type === "link" ? { ...styles.link, color: accent } : undefined,
         style,
       ]}
       {...rest}
@@ -60,8 +62,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   link: {
-    lineHeight: 30,
+    lineHeight: 24,
     fontSize: 16,
-    color: "#0a7ea4",
   },
 });

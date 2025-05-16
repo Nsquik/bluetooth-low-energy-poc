@@ -1,4 +1,5 @@
 import { Button } from "@/components/Button";
+import { InfoAction } from "@/components/InfoAction";
 import { PeripheralList } from "@/components/PeripheralList";
 import { ThemedView } from "@/components/ThemedView";
 import { SPACING } from "@/constants/Token";
@@ -71,6 +72,10 @@ export default function DeviceScreen() {
         loading={isScanning}
         data={Array.from(availablePeripherals.values())}
         onPress={connectPeripheral}
+      />
+      <InfoAction
+        message="To connect with your sensor you need to turn on Bluetooth"
+        action={{ text: "Allow bluetooth", onPress: () => null }}
       />
       <Button
         style={styles.scanButton}
