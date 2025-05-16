@@ -7,6 +7,7 @@ import BleManager, {
   BleScanMode,
   BleState,
 } from "react-native-ble-manager";
+import { useBluetoothPermissions } from "../useBluetoothPermissions";
 import { UseBluetooth, UseBluetoothProps } from "./useBluetooth.types";
 import { mapPeripheral } from "./useBluetooth.utils";
 
@@ -25,11 +26,16 @@ export function useBluetooth({
     Map<string, Peripheral>
   >(new Map());
   const [connectedPeripheral, setConnectedPeripheral] = useState<Peripheral>();
+  const { requestPermissions, status: permissionStatus } =
+    useBluetoothPermissions({
+      alertOnDenied: true,
+    });
 
   const initBluetoothManager = async () => {
     try {
       await BleManager.start({ showAlert: true });
       await BleManager.checkState();
+      await requestPermissions();
     } catch (e) {
       console.log("Couldn't start bluetooth manager", e);
     }
@@ -61,6 +67,11 @@ export function useBluetooth({
     });
   };
 
+  const resetAvailablePeripheral = () => {
+    const newMap = new Map();
+    setAvailablePeripherals(newMap);
+  };
+
   const setAvailablePeripheralConnecting = (
     peripheral: Peripheral,
     connecting: boolean
@@ -75,9 +86,11 @@ export function useBluetooth({
   };
 
   const scanPeripherals = useCallback(async () => {
-    const isReady = state === BleState.On;
+    await requestPermissions();
+    const isReady = state === BleState.On && permissionStatus;
     if (isReady) {
-      setAvailablePeripherals(new Map());
+      console.log("scan");
+      resetAvailablePeripheral();
       setIsScanning(true);
       const connectedPeripherals = await BleManager.getConnectedPeripherals([]);
       setConnectedPeripheral(undefined);
@@ -93,13 +106,13 @@ export function useBluetooth({
       });
     }
   }, [
+    requestPermissions,
+    permissionStatus,
     state,
     serviceUUIDs,
     scanSeconds,
     allowDuplicates,
     addConnectedPeripheral,
-    setConnectedPeripheral,
-    setAvailablePeripherals,
   ]);
 
   const connectPeripheral = async (peripheral: Peripheral) => {
