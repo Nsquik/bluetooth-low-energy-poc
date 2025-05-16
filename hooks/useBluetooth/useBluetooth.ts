@@ -1,6 +1,6 @@
 import { Peripheral } from "@/types/Peripheral.types";
 import { useCallback, useEffect, useState } from "react";
-import { EventSubscription } from "react-native";
+import { EventSubscription, Linking, Platform } from "react-native";
 import BleManager, {
   BleScanCallbackType,
   BleScanMatchMode,
@@ -121,6 +121,15 @@ export function useBluetooth({
     addConnectedPeripheral(peripheral);
   };
 
+  const enableBluetooth = async () => {
+    if (Platform.OS === "android") {
+      await BleManager.enableBluetooth();
+    }
+    if (Platform.OS === "ios") {
+      await Linking.openURL("App-Prefs:root=Bluetooth");
+    }
+  };
+
   const handleBluetoothManagerStateChange = (
     event: { state?: BleState } | undefined
   ) => {
@@ -160,9 +169,12 @@ export function useBluetooth({
 
   return {
     state,
+    permissionStatus,
     isScanning,
     availablePeripherals,
     connectedPeripheral,
+    enableBluetooth,
+    requestPermissions,
     scanPeripherals,
     connectPeripheral,
   };

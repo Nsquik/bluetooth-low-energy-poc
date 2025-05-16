@@ -6,14 +6,19 @@ import { SPACING } from "@/constants/Token";
 import { useBluetooth } from "@/hooks/useBluetooth";
 import { useEffect } from "react";
 import { StyleSheet } from "react-native";
+import { BleState } from "react-native-ble-manager";
 
 const SERVICE_UUIDS: string[] = ["180D"];
 
 export default function DeviceScreen() {
   const {
+    state,
+    permissionStatus,
     isScanning,
     connectedPeripheral,
     availablePeripherals,
+    enableBluetooth,
+    requestPermissions,
     connectPeripheral,
     scanPeripherals,
   } = useBluetooth({ serviceUUIDs: SERVICE_UUIDS });
@@ -73,10 +78,20 @@ export default function DeviceScreen() {
         data={Array.from(availablePeripherals.values())}
         onPress={connectPeripheral}
       />
-      <InfoAction
-        message="To connect with your sensor you need to turn on Bluetooth"
-        action={{ text: "Allow bluetooth", onPress: () => null }}
-      />
+      {state === BleState.Off ? (
+        <InfoAction
+          message="Bluetooth connection is required in order to pair sensor"
+          action={{ text: "Connect", onPress: enableBluetooth }}
+        />
+      ) : null}
+      {!permissionStatus ? (
+        <ThemedView style={{ marginTop: SPACING.md }}>
+          <InfoAction
+            message="Bluetooth permissions are required in order to pair sensor"
+            action={{ text: "Accept", onPress: requestPermissions }}
+          />
+        </ThemedView>
+      ) : null}
       <Button
         style={styles.scanButton}
         text={"Scan"}

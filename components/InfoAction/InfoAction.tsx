@@ -11,10 +11,14 @@ export function InfoAction({ message, action }: InfoActionProps) {
 
   return (
     <ThemedView style={[styles.container, { backgroundColor: color.card }]}>
-      <ThemedView style={styles.textContainer}>
+      <ThemedView
+        style={[styles.textContainer, { backgroundColor: color.card }]}
+      >
         <ThemedText type="medium">{message}</ThemedText>
       </ThemedView>
-      <ThemedView style={styles.linkContainer}>
+      <ThemedView
+        style={[styles.linkContainer, { backgroundColor: color.card }]}
+      >
         <Link text={action.text} onPress={action.onPress} />
       </ThemedView>
     </ThemedView>
@@ -31,11 +35,9 @@ const styles = StyleSheet.create({
     borderRadius: SPACING.sm,
   },
   textContainer: {
-    backgroundColor: "inherit",
     flex: 0.6,
   },
   linkContainer: {
-    backgroundColor: "inherit",
     alignItems: "flex-end",
     flex: 0.4,
   },
