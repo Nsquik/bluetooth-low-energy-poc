@@ -1,19 +1,6 @@
 import { useTheme } from "@/hooks/useTheme";
-import { StyleSheet, Text, TextStyle, type TextProps } from "react-native";
-
-export type ThemedTextProps = TextProps & {
-  lightColor?: string;
-  darkColor?: string;
-  textTransform?: TextStyle["textTransform"];
-  type?:
-    | "default"
-    | "small"
-    | "medium"
-    | "title"
-    | "defaultSemiBold"
-    | "subtitle"
-    | "link";
-};
+import { StyleSheet, Text } from "react-native";
+import { ThemedTextProps } from "./ThemedText.types";
 
 export function ThemedText({
   style,
