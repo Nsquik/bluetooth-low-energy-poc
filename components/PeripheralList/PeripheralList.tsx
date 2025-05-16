@@ -88,6 +88,7 @@ export function PeripheralList({
 
 const styles = StyleSheet.create({
   row: {
+    height: 55,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",

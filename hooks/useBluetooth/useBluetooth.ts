@@ -17,7 +17,7 @@ export function useBluetooth({
   scanSeconds = SECONDS_TO_SCAN_FOR,
   serviceUUIDs = SERVICE_UUIDS,
   allowDuplicates = ALLOW_DUPLICATES,
-}: UseBluetoothProps): UseBluetooth {
+}: UseBluetoothProps = {}): UseBluetooth {
   const [isScanning, setIsScanning] = useState(false);
   const [state, setState] = useState<BleState>(BleState.Unknown);
   const [availablePeripherals, setAvailablePeripherals] = useState<
