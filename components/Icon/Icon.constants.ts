@@ -6,5 +6,6 @@ export const ICON_MAPPING = {
   "chevron.left.forwardslash.chevron.right": "code",
   "chevron.right": "chevron-right",
   applewatch: "watch",
+  "applewatch.slash": "watch-off",
   "bolt.heart.fill": "monitor-heart",
 } as IconMapping;

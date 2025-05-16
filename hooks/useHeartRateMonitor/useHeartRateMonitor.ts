@@ -18,6 +18,8 @@ export function useHeartRateMonitor(): UseHeartRateMonitor {
   >();
 
   const {
+    isAvailable,
+    permissionStatus,
     connectedPeripheral,
     getCharacteristic,
     subscribeCharacteristic,
@@ -28,6 +30,10 @@ export function useHeartRateMonitor(): UseHeartRateMonitor {
     allowDuplicates: false,
     onCharacteristicUpdate,
   });
+
+  const isConnected = Boolean(
+    isAvailable && permissionStatus && connectedPeripheral?.connected
+  );
 
   const parseHeartRateValue = ([
     _,
@@ -84,6 +90,7 @@ export function useHeartRateMonitor(): UseHeartRateMonitor {
 
   return {
     isInitializing,
+    isConnected,
     heartRate: heartRate,
     heartRateLatest: heartRateLatest,
     startMonitoring,

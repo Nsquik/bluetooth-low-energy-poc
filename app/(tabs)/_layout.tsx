@@ -19,7 +19,7 @@ export default function TabLayout() {
           paddingLeft: left + SPACING.sm,
           paddingRight: right + SPACING.sm,
         },
-        headerShown: false,
+        headerShown: true,
         tabBarButton: HapticTab,
       }}
     >
