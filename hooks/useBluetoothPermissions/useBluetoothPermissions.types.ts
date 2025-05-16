@@ -1,6 +1,12 @@
+export type UseBluetoothPermissionsRequest = (
+  props?: {
+    showAlert: boolean;
+  }
+) => Promise<void>;
+
 export type UseBluetoothPermissions = {
   status: boolean;
-  requestPermissions: () => Promise<void>;
+  requestPermissions: UseBluetoothPermissionsRequest;
 };
 
-export type UseBluetoothPermissionsProps = { alertOnDenied: boolean };
+export type UseBluetoothPermissionsProps = unknown;

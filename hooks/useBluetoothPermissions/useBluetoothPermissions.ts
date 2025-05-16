@@ -4,11 +4,12 @@ import { PERMISSION_NAME } from "./useBluetoothPermissions.constants";
 import {
   UseBluetoothPermissions,
   UseBluetoothPermissionsProps,
+  UseBluetoothPermissionsRequest,
 } from "./useBluetoothPermissions.types";
 
-export function useBluetoothPermissions({
-  alertOnDenied,
-}: UseBluetoothPermissionsProps): UseBluetoothPermissions {
+export function useBluetoothPermissions(
+  _props: UseBluetoothPermissionsProps
+): UseBluetoothPermissions {
   const [status, setStatus] = useState(false);
 
   const openApplicationSettings = () => {
@@ -24,33 +25,36 @@ export function useBluetoothPermissions({
     setStatus(connectStatus && scanStatus);
   }, [setStatus]);
 
-  const requestPermissions = useCallback(async () => {
-    const permissionsResponse = await PermissionsAndroid.requestMultiple([
-      PERMISSION_NAME.connect,
-      PERMISSION_NAME.scan,
-    ]);
+  const requestPermissions: UseBluetoothPermissionsRequest = useCallback(
+    async ({ showAlert } = { showAlert: true }) => {
+      const permissionsResponse = await PermissionsAndroid.requestMultiple([
+        PERMISSION_NAME.connect,
+        PERMISSION_NAME.scan,
+      ]);
 
-    const hasAcceptedPermissions =
-      permissionsResponse[PERMISSION_NAME.connect] === "granted" &&
-      permissionsResponse[PERMISSION_NAME.scan] === "granted";
+      const hasAcceptedPermissions =
+        permissionsResponse[PERMISSION_NAME.connect] === "granted" &&
+        permissionsResponse[PERMISSION_NAME.scan] === "granted";
 
-    const hasNeverAskAgainStatus =
-      permissionsResponse[PERMISSION_NAME.connect] === "never_ask_again" &&
-      permissionsResponse[PERMISSION_NAME.scan] === "never_ask_again";
+      const hasNeverAskAgainStatus =
+        permissionsResponse[PERMISSION_NAME.connect] === "never_ask_again" &&
+        permissionsResponse[PERMISSION_NAME.scan] === "never_ask_again";
 
-    if (hasAcceptedPermissions) {
-      setStatus(hasAcceptedPermissions);
-    } else if (alertOnDenied && hasNeverAskAgainStatus) {
-      Alert.alert(
-        "Action required",
-        "Bluetooth permission is required to connect with your sensor. Allow bluetooth connection",
-        [
-          { text: "Ok", onPress: openApplicationSettings, isPreferred: true },
-          { style: "cancel", text: "Cancel" },
-        ]
-      );
-    }
-  }, []);
+      if (hasAcceptedPermissions) {
+        setStatus(hasAcceptedPermissions);
+      } else if (showAlert && hasNeverAskAgainStatus) {
+        Alert.alert(
+          "Action required",
+          "Bluetooth permission is required to connect with your sensor. Allow bluetooth connection",
+          [
+            { text: "Ok", onPress: openApplicationSettings, isPreferred: true },
+            { style: "cancel", text: "Cancel" },
+          ]
+        );
+      }
+    },
+    []
+  );
 
   useEffect(() => {
     checkPermissions();
