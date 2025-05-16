@@ -9,13 +9,14 @@ import { Touchable } from "../Touchable";
 import { PeripheralListProps } from "./PeripheralList.types";
 
 export function PeripheralList({
+  hasFetched,
+  loading,
   data,
   title,
-  loading,
   onPress,
   style,
 }: PeripheralListProps) {
-  const isEmpty = !data.length && !loading;
+  const isEmpty = hasFetched && !data.length && !loading;
   const { color } = useTheme();
 
   const isEmptyText = isEmpty ? "(Not found)" : null;

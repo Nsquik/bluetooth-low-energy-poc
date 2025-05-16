@@ -6,15 +6,15 @@ import { SPACING } from "@/constants/Token";
 import { useBluetooth } from "@/hooks/useBluetooth";
 import { useEffect } from "react";
 import { StyleSheet } from "react-native";
-import { BleState } from "react-native-ble-manager";
 
 const SERVICE_UUIDS: string[] = ["180D"];
 
 export default function DeviceScreen() {
   const {
-    state,
-    permissionStatus,
+    isAvailable,
     isScanning,
+    hasScanned,
+    permissionStatus,
     connectedPeripheral,
     availablePeripherals,
     enableBluetooth,
@@ -27,44 +27,11 @@ export default function DeviceScreen() {
     scanPeripherals();
   }, [scanPeripherals]);
 
-  // const retrieveServices = async () => {
-  //   const peripheralInfos: PeripheralInfo[] = [];
-  //   for (const [peripheralId, peripheral] of connectedPeripherals) {
-  //     if (peripheral.connected) {
-  //       const newPeripheralInfo = await BleManager.retrieveServices(
-  //         peripheralId
-  //       );
-
-  //       peripheralInfos.push(newPeripheralInfo);
-  //     }
-  //   }
-
-  //   return peripheralInfos;
-  // };
-
-  // const readCharacteristics = async () => {
-  //   const services = await retrieveServices();
-
-  //   for (const peripheralInfo of services) {
-  //     peripheralInfo.characteristics?.forEach(async (c) => {
-  //       if (c.properties.Notify && c.characteristic === "2a37") {
-  //         console.log(peripheralInfo.id, c.characteristic, c.service);
-  //         BleManager.startNotification(
-  //           peripheralInfo.id,
-  //           c.service,
-  //           c.characteristic
-  //         ).then(() => {
-  //           console.log("started notifying");
-  //         });
-  //       }
-  //     });
-  //   }
-  // };
-
   return (
     <ThemedView style={styles.container}>
       {connectedPeripheral ? (
         <PeripheralList
+          hasFetched={hasScanned}
           title="Connected Sensors"
           loading={isScanning}
           data={[connectedPeripheral]}
@@ -73,32 +40,40 @@ export default function DeviceScreen() {
       ) : null}
 
       <PeripheralList
+        hasFetched={hasScanned}
         title="Available Sensors"
         loading={isScanning}
         data={Array.from(availablePeripherals.values())}
         onPress={connectPeripheral}
       />
-      {state === BleState.Off ? (
-        <InfoAction
-          message="Bluetooth connection is required in order to pair sensor"
-          action={{ text: "Connect", onPress: enableBluetooth }}
-        />
-      ) : null}
-      {!permissionStatus ? (
-        <ThemedView style={{ marginTop: SPACING.md }}>
+      {!isAvailable ? (
+        <ThemedView style={styles.infoActionContainer}>
           <InfoAction
-            message="Bluetooth permissions are required in order to pair sensor"
-            action={{ text: "Accept", onPress: requestPermissions }}
+            message="Bluetooth connection is required in order to pair sensor"
+            action={{ text: "Connect", onPress: enableBluetooth }}
           />
         </ThemedView>
       ) : null}
-      <Button
-        style={styles.scanButton}
-        text={"Scan"}
-        onPress={scanPeripherals}
-        loading={isScanning}
-        disabled={isScanning}
-      />
+      {permissionStatus === false ? (
+        <ThemedView style={styles.infoActionContainer}>
+          <InfoAction
+            message="Bluetooth permissions are required in order to pair sensor"
+            action={{
+              text: "Accept",
+              onPress: () => requestPermissions({ showAlert: true }),
+            }}
+          />
+        </ThemedView>
+      ) : null}
+      {hasScanned ? (
+        <Button
+          style={styles.scanButton}
+          text={"Scan"}
+          onPress={scanPeripherals}
+          loading={isScanning}
+          disabled={isScanning || !isAvailable || !permissionStatus}
+        />
+      ) : null}
     </ThemedView>
   );
 }
@@ -121,6 +96,10 @@ const styles = StyleSheet.create({
   },
   scanButton: {
     margin: SPACING.md,
-    marginVertical: SPACING.xl,
+    marginBottom: SPACING.xl,
+  },
+  infoActionContainer: {
+    marginBottom: SPACING.lg,
+    marginHorizontal: SPACING.md,
   },
 });

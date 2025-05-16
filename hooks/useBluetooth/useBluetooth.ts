@@ -21,15 +21,21 @@ export function useBluetooth({
   allowDuplicates = ALLOW_DUPLICATES,
 }: UseBluetoothProps = {}): UseBluetooth {
   const [isScanning, setIsScanning] = useState(false);
+  const [hasScanned, setHasScanned] = useState(false);
   const [state, setState] = useState<BleState>(BleState.Unknown);
   const [availablePeripherals, setAvailablePeripherals] = useState<
     Map<string, Peripheral>
   >(new Map());
   const [connectedPeripheral, setConnectedPeripheral] = useState<Peripheral>();
   const { requestPermissions, status: permissionStatus } =
-    useBluetoothPermissions({
-      alertOnDenied: true,
-    });
+    useBluetoothPermissions();
+  const disabledStateList = [
+    BleState.Off,
+    BleState.Unauthorized,
+    BleState.Unsupported,
+    BleState.TurningOff,
+  ];
+  const isAvailable = !disabledStateList.includes(state);
 
   const initBluetoothManager = useCallback(async () => {
     try {
@@ -45,6 +51,10 @@ export function useBluetooth({
     const connectedPeripheral = mapPeripheral(peripheral, { connected: true });
 
     setConnectedPeripheral(connectedPeripheral);
+  }, []);
+
+  const resetConnectedPeripheral = useCallback(() => {
+    setConnectedPeripheral(undefined);
   }, []);
 
   const addAvailablePeripheral = useCallback((peripheral: Peripheral) => {
@@ -86,10 +96,11 @@ export function useBluetooth({
   };
 
   const scanPeripherals = useCallback(async () => {
+    resetAvailablePeripheral();
+
     await requestPermissions();
     const isReady = state === BleState.On && permissionStatus;
     if (isReady) {
-      resetAvailablePeripheral();
       setIsScanning(true);
       const connectedPeripherals = await BleManager.getConnectedPeripherals([]);
       setConnectedPeripheral(undefined);
@@ -97,7 +108,6 @@ export function useBluetooth({
       if (connectedPeripherals.length) {
         addConnectedPeripheral(connectedPeripherals[0] as Peripheral);
       }
-
       await BleManager.scan(serviceUUIDs, scanSeconds, allowDuplicates, {
         matchMode: BleScanMatchMode.Sticky,
         scanMode: BleScanMode.LowLatency,
@@ -106,8 +116,8 @@ export function useBluetooth({
     }
   }, [
     requestPermissions,
-    permissionStatus,
     state,
+    permissionStatus,
     serviceUUIDs,
     scanSeconds,
     allowDuplicates,
@@ -115,10 +125,14 @@ export function useBluetooth({
   ]);
 
   const connectPeripheral = async (peripheral: Peripheral) => {
-    setAvailablePeripheralConnecting(peripheral, true);
-    await BleManager.connect(peripheral.id, { autoconnect: true });
-    removeAvailablePeripheral(peripheral);
-    addConnectedPeripheral(peripheral);
+    try {
+      setAvailablePeripheralConnecting(peripheral, true);
+      await BleManager.connect(peripheral.id);
+      removeAvailablePeripheral(peripheral);
+      addConnectedPeripheral(peripheral);
+    } catch {
+      setAvailablePeripheralConnecting(peripheral, false);
+    }
   };
 
   const enableBluetooth = async () => {
@@ -130,13 +144,16 @@ export function useBluetooth({
     }
   };
 
-  const handleBluetoothManagerStateChange = (
-    event: { state?: BleState } | undefined
-  ) => {
-    if (event?.state) {
-      setState(event.state);
-    }
-  };
+  const handleBluetoothManagerStateChange = useCallback(
+    (event: { state?: BleState } | undefined) => {
+      if (event?.state) {
+        resetAvailablePeripheral();
+        resetConnectedPeripheral();
+        setState(event.state);
+      }
+    },
+    [resetConnectedPeripheral]
+  );
 
   const handleDiscoverPeripheral = useCallback(
     (peripheral: Peripheral) => {
@@ -147,6 +164,7 @@ export function useBluetooth({
 
   const handleStopScan = () => {
     setIsScanning(false);
+    setHasScanned(true);
   };
 
   useEffect(() => {
@@ -165,12 +183,13 @@ export function useBluetooth({
         listener.remove();
       }
     };
-  }, [handleDiscoverPeripheral]);
+  }, [handleBluetoothManagerStateChange, handleDiscoverPeripheral]);
 
   return {
-    state,
-    permissionStatus,
+    isAvailable,
     isScanning,
+    hasScanned,
+    permissionStatus,
     availablePeripherals,
     connectedPeripheral,
     enableBluetooth,
@@ -179,3 +198,37 @@ export function useBluetooth({
     connectPeripheral,
   };
 }
+
+// const retrieveServices = async () => {
+//   const peripheralInfos: PeripheralInfo[] = [];
+//   for (const [peripheralId, peripheral] of connectedPeripherals) {
+//     if (peripheral.connected) {
+//       const newPeripheralInfo = await BleManager.retrieveServices(
+//         peripheralId
+//       );
+
+//       peripheralInfos.push(newPeripheralInfo);
+//     }
+//   }
+
+//   return peripheralInfos;
+// };
+
+// const readCharacteristics = async () => {
+//   const services = await retrieveServices();
+
+//   for (const peripheralInfo of services) {
+//     peripheralInfo.characteristics?.forEach(async (c) => {
+//       if (c.properties.Notify && c.characteristic === "2a37") {
+//         console.log(peripheralInfo.id, c.characteristic, c.service);
+//         BleManager.startNotification(
+//           peripheralInfo.id,
+//           c.service,
+//           c.characteristic
+//         ).then(() => {
+//           console.log("started notifying");
+//         });
+//       }
+//     });
+//   }
+// };

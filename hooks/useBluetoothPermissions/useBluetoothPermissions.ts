@@ -3,14 +3,11 @@ import { Alert, Linking, PermissionsAndroid } from "react-native";
 import { PERMISSION_NAME } from "./useBluetoothPermissions.constants";
 import {
   UseBluetoothPermissions,
-  UseBluetoothPermissionsProps,
   UseBluetoothPermissionsRequest,
 } from "./useBluetoothPermissions.types";
 
-export function useBluetoothPermissions(
-  _props: UseBluetoothPermissionsProps
-): UseBluetoothPermissions {
-  const [status, setStatus] = useState(false);
+export function useBluetoothPermissions(): UseBluetoothPermissions {
+  const [status, setStatus] = useState<boolean | null>(null);
 
   const openApplicationSettings = () => {
     Linking.openSettings();
@@ -26,7 +23,7 @@ export function useBluetoothPermissions(
   }, [setStatus]);
 
   const requestPermissions: UseBluetoothPermissionsRequest = useCallback(
-    async ({ showAlert } = { showAlert: true }) => {
+    async ({ showAlert } = { showAlert: false }) => {
       const permissionsResponse = await PermissionsAndroid.requestMultiple([
         PERMISSION_NAME.connect,
         PERMISSION_NAME.scan,

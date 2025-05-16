@@ -12,12 +12,17 @@ export function Button({
   onPress,
   style,
   loading,
+  disabled,
   ...touchableProps
 }: ButtonProps) {
   const { color } = useTheme();
   return (
     <Touchable
-      style={[{ backgroundColor: color.primary }, styles.container, style]}
+      style={[
+        { backgroundColor: disabled ? color.card : color.primary },
+        styles.container,
+        style,
+      ]}
       onPress={onPress}
       {...touchableProps}
     >

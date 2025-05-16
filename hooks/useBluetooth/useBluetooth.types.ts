@@ -1,5 +1,5 @@
 import { Peripheral } from "@/types/Peripheral.types";
-import { BleState } from "react-native-ble-manager";
+import { UseBluetoothPermissions } from "../useBluetoothPermissions";
 
 export type UseBluetoothProps = {
   serviceUUIDs?: string[];
@@ -8,12 +8,13 @@ export type UseBluetoothProps = {
 };
 
 export type UseBluetooth = {
-  state: BleState;
-  permissionStatus: boolean;
+  permissionStatus: UseBluetoothPermissions["status"];
+  isAvailable: boolean;
   isScanning: boolean;
+  hasScanned: boolean;
   availablePeripherals: Map<string, Peripheral>;
   connectedPeripheral?: Peripheral;
-  requestPermissions: () => Promise<void>;
+  requestPermissions: UseBluetoothPermissions["requestPermissions"];
   scanPeripherals: () => Promise<void>;
   connectPeripheral: (peripheral: Peripheral) => Promise<void>;
   enableBluetooth: () => Promise<void>;
