@@ -5,4 +5,6 @@ export const ICON_MAPPING = {
   "paperplane.fill": "send",
   "chevron.left.forwardslash.chevron.right": "code",
   "chevron.right": "chevron-right",
+  applewatch: "watch",
+  "bolt.heart.fill": "monitor-heart",
 } as IconMapping;

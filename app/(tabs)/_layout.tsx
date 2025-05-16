@@ -29,7 +29,7 @@ export default function TabLayout() {
           headerShown: true,
           title: "Heart Rate",
           tabBarIcon: ({ color }) => (
-            <Icon size={28} name="house.fill" color={color} />
+            <Icon size={28} name="bolt.heart.fill" color={color} />
           ),
         }}
       />
@@ -39,7 +39,7 @@ export default function TabLayout() {
           headerShown: true,
           title: "Device",
           tabBarIcon: ({ color }) => (
-            <Icon size={28} name="paperplane.fill" color={color} />
+            <Icon size={28} name="applewatch" color={color} />
           ),
         }}
       />
