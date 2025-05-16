@@ -77,12 +77,7 @@ export function PeripheralList({
         {loading ? <Loader /> : null}
       </ThemedView>
       <FlatList
-        style={[
-          {
-            flex: 0,
-          },
-          style,
-        ]}
+        style={[style]}
         data={data}
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
