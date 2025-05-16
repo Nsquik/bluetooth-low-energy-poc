@@ -32,18 +32,51 @@ export default function DeviceScreen() {
     scanPeripherals();
   }, [scanPeripherals]);
 
+  const connectedPeripheralList = connectedPeripheral ? (
+    <PeripheralList
+      hasFetched={hasScanned}
+      title="Connected Sensors"
+      loading={isScanning}
+      data={[connectedPeripheral]}
+      style={{ flexGrow: 0 }}
+    />
+  ) : null;
+
+  const bluetoothInfo = !isAvailable ? (
+    <ThemedView style={styles.infoActionContainer}>
+      <InfoAction
+        message="Bluetooth connection is required in order to pair sensor"
+        action={{ text: "Connect", onPress: enableBluetooth }}
+      />
+    </ThemedView>
+  ) : null;
+
+  const permissionInfo =
+    permissionStatus === false ? (
+      <ThemedView style={styles.infoActionContainer}>
+        <InfoAction
+          message="Bluetooth permissions are required in order to pair sensor"
+          action={{
+            text: "Accept",
+            onPress: () => requestPermissions({ showAlert: true }),
+          }}
+        />
+      </ThemedView>
+    ) : null;
+
+  const scanButton = hasScanned ? (
+    <Button
+      style={styles.scanButton}
+      text={"Scan"}
+      onPress={scanPeripherals}
+      loading={isScanning}
+      disabled={isScanning || !isAvailable || !permissionStatus}
+    />
+  ) : null;
+
   return (
     <ThemedView style={styles.container}>
-      {connectedPeripheral ? (
-        <PeripheralList
-          hasFetched={hasScanned}
-          title="Connected Sensors"
-          loading={isScanning}
-          data={[connectedPeripheral]}
-          style={{ flexGrow: 0 }}
-        />
-      ) : null}
-
+      {connectedPeripheralList}
       <PeripheralList
         hasFetched={hasScanned}
         title="Available Sensors"
@@ -51,34 +84,9 @@ export default function DeviceScreen() {
         data={Array.from(availablePeripherals.values())}
         onPress={connectPeripheral}
       />
-      {!isAvailable ? (
-        <ThemedView style={styles.infoActionContainer}>
-          <InfoAction
-            message="Bluetooth connection is required in order to pair sensor"
-            action={{ text: "Connect", onPress: enableBluetooth }}
-          />
-        </ThemedView>
-      ) : null}
-      {permissionStatus === false ? (
-        <ThemedView style={styles.infoActionContainer}>
-          <InfoAction
-            message="Bluetooth permissions are required in order to pair sensor"
-            action={{
-              text: "Accept",
-              onPress: () => requestPermissions({ showAlert: true }),
-            }}
-          />
-        </ThemedView>
-      ) : null}
-      {hasScanned ? (
-        <Button
-          style={styles.scanButton}
-          text={"Scan"}
-          onPress={scanPeripherals}
-          loading={isScanning}
-          disabled={isScanning || !isAvailable || !permissionStatus}
-        />
-      ) : null}
+      {bluetoothInfo}
+      {permissionInfo}
+      {scanButton}
     </ThemedView>
   );
 }

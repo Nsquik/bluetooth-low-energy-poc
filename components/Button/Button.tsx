@@ -16,6 +16,10 @@ export function Button({
   ...touchableProps
 }: ButtonProps) {
   const { color } = useTheme();
+
+  const loader = loading ? (
+    <Loader style={styles.loader} size={"small"} />
+  ) : null;
   return (
     <Touchable
       style={[
@@ -27,7 +31,7 @@ export function Button({
       {...touchableProps}
     >
       <ThemedText>{text}</ThemedText>
-      {loading ? <Loader style={styles.loader} size={"small"} /> : null}
+      {loader}
     </Touchable>
   );
 }
