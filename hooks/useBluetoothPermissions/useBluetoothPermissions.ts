@@ -32,7 +32,7 @@ export function useBluetoothPermissions(
         PERMISSION_NAME.scan,
       ]);
 
-      const hasAcceptedPermissions =
+      const hasAcceptedStatus =
         permissionsResponse[PERMISSION_NAME.connect] === "granted" &&
         permissionsResponse[PERMISSION_NAME.scan] === "granted";
 
@@ -40,8 +40,8 @@ export function useBluetoothPermissions(
         permissionsResponse[PERMISSION_NAME.connect] === "never_ask_again" &&
         permissionsResponse[PERMISSION_NAME.scan] === "never_ask_again";
 
-      if (hasAcceptedPermissions) {
-        setStatus(hasAcceptedPermissions);
+      if (hasAcceptedStatus) {
+        setStatus(hasAcceptedStatus);
       } else if (showAlert && hasNeverAskAgainStatus) {
         Alert.alert(
           "Action required",

@@ -77,6 +77,7 @@ export default function DeviceScreen() {
         text={"Scan"}
         onPress={scanPeripherals}
         loading={isScanning}
+        disabled={isScanning}
       />
     </ThemedView>
   );

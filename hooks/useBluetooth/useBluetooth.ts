@@ -89,7 +89,6 @@ export function useBluetooth({
     await requestPermissions();
     const isReady = state === BleState.On && permissionStatus;
     if (isReady) {
-      console.log("scan");
       resetAvailablePeripheral();
       setIsScanning(true);
       const connectedPeripherals = await BleManager.getConnectedPeripherals([]);
