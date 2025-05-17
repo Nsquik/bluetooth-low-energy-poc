@@ -1,12 +1,9 @@
-export type UseHeartRatePoint = {
-  date: Date;
-  value: number;
-};
+import { HeartRate } from "@/types/HeartRate.types";
 
 export type UseHeartRateMonitor = {
   isInitializing: boolean;
   isConnected: boolean;
-  heartRate: UseHeartRatePoint[];
-  heartRateLatest: number | undefined;
+  heartRateList: HeartRate[];
+  heartRateLatest: HeartRate | undefined;
   startMonitoring: () => void;
 };

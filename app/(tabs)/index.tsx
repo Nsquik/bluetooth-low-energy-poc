@@ -20,7 +20,7 @@ export default function HeartRateScreen() {
     isConnected,
     startMonitoring,
     heartRateLatest,
-    heartRate,
+    heartRateList,
   } = useHeartRateMonitor();
 
   useEffect(() => {
@@ -67,16 +67,16 @@ export default function HeartRateScreen() {
           marginTop: 100,
         }}
       >
-        <ThemedText type="title">{heartRateLatest}</ThemedText>
+        <ThemedText type="title">{heartRateLatest?.value}</ThemedText>
         <ThemedText type="small">bpm</ThemedText>
       </ThemedView>
 
       {heart}
 
       <ThemedView style={{ height: 100, alignSelf: "stretch" }}>
-        {heartRate.length > 2 ? (
+        {heartRateList.length > 2 ? (
           <LineChart
-            data={heartRate}
+            data={heartRateList}
             thickness={2}
             color={color.accent}
             hideRules

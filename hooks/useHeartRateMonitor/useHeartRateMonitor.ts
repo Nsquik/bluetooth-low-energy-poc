@@ -1,21 +1,19 @@
 import { HEART_RATE_SERVICES } from "@/constants/Services";
+import { HeartRate } from "@/types/HeartRate.types";
 import { useCallback, useEffect, useState } from "react";
 import { Characteristic } from "react-native-ble-manager";
 import {
   useBluetooth,
   UseBluetoothCharacteristicUpdateEvent,
 } from "../useBluetooth";
-import {
-  UseHeartRateMonitor,
-  UseHeartRatePoint,
-} from "./useHeartRateMonitor.types";
+import { UseHeartRateMonitor } from "./useHeartRateMonitor.types";
 
 const HEART_RATE_MEASURE_CHARACTERISTIC_UUID = "2a37";
 
 export function useHeartRateMonitor(): UseHeartRateMonitor {
   const [isInitializing, setIsInitializing] = useState(false);
-  const [heartRate, setHeartRate] = useState<UseHeartRatePoint[]>([]);
-  const [heartRateLatest, setHeartRateLatest] = useState<number>();
+  const [heartRateList, HeartRateList] = useState<HeartRate[]>([]);
+  const [heartRateLatest, setHeartRateLatest] = useState<HeartRate>();
   const [subscribedCharacteristic, setSubscribedCharacteristics] = useState<
     Characteristic | undefined
   >();
@@ -43,10 +41,9 @@ export function useHeartRateMonitor(): UseHeartRateMonitor {
     value,
   ]: UseBluetoothCharacteristicUpdateEvent["value"]) => {
     const point = {
-      date: new Date(),
       value,
     };
-    setHeartRate((prev) => {
+    HeartRateList((prev) => {
       if (prev.length < 1000) {
         return [...prev, point];
       } else {
@@ -54,7 +51,7 @@ export function useHeartRateMonitor(): UseHeartRateMonitor {
       }
     });
 
-    setHeartRateLatest(value);
+    setHeartRateLatest({ value });
   };
 
   function onCharacteristicUpdate(ev: UseBluetoothCharacteristicUpdateEvent) {
@@ -105,8 +102,8 @@ export function useHeartRateMonitor(): UseHeartRateMonitor {
   return {
     isInitializing,
     isConnected,
-    heartRate: heartRate,
-    heartRateLatest: heartRateLatest,
+    heartRateList,
+    heartRateLatest,
     startMonitoring,
   };
 }
