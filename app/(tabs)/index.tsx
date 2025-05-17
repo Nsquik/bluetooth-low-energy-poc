@@ -54,7 +54,8 @@ export default function HeartRateScreen() {
   return (
     <ThemedView style={styles.container}>
       {loader}
-      <ThemedText>{heartRateLatest}</ThemedText>
+      <ThemedText type="title">{heartRateLatest}</ThemedText>
+      <ThemedText type="small">bpm</ThemedText>
       {heart}
     </ThemedView>
   );

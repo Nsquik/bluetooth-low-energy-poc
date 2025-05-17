@@ -12,7 +12,8 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.nsquik.heartratemonitor",
       "infoPlist": {
-        "ITSAppUsesNonExemptEncryption": false
+        "ITSAppUsesNonExemptEncryption": false,
+        "UIBackgroundModes": ["bluetooth-central"]
       }
     },
     "android": {

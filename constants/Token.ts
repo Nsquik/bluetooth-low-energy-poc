@@ -3,6 +3,7 @@ export const SPACING = {
   md: 8,
   lg: 16,
   xl: 24,
+  xxxl: 64,
 };
 
 export const FONT_SIZE = {

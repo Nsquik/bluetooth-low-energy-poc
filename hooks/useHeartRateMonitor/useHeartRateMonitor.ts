@@ -5,13 +5,16 @@ import {
   useBluetooth,
   UseBluetoothCharacteristicUpdateEvent,
 } from "../useBluetooth";
-import { UseHeartRateMonitor } from "./useHeartRateMonitor.types";
+import {
+  UseHeartRateMonitor,
+  UseHeartRatePoint,
+} from "./useHeartRateMonitor.types";
 
 const HEART_RATE_MEASURE_CHARACTERISTIC_UUID = "2a37";
 
 export function useHeartRateMonitor(): UseHeartRateMonitor {
   const [isInitializing, setIsInitializing] = useState(false);
-  const [heartRate, setHeartRate] = useState<number[]>([]);
+  const [heartRate, setHeartRate] = useState<UseHeartRatePoint[]>([]);
   const [heartRateLatest, setHeartRateLatest] = useState<number>();
   const [subscribedCharacteristic, setSubscribedCharacteristics] = useState<
     Characteristic | undefined
@@ -39,7 +42,11 @@ export function useHeartRateMonitor(): UseHeartRateMonitor {
     _,
     value,
   ]: UseBluetoothCharacteristicUpdateEvent["value"]) => {
-    setHeartRate((prevHeartRate) => [...prevHeartRate, value]);
+    const point = {
+      date: new Date(),
+      value,
+    };
+    setHeartRate((prevHeartRate) => [...prevHeartRate, point]);
     setHeartRateLatest(value);
   };
 
