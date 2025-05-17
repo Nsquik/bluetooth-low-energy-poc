@@ -154,7 +154,10 @@ export function useBluetooth({
       await BleManager.enableBluetooth();
     }
     if (Platform.OS === "ios") {
-      await Linking.openURL("App-Prefs:root=Bluetooth");
+      if (state === BleState.Unauthorized) {
+        return Linking.openSettings();
+      }
+      await Linking.openURL("App-Prefs:root=General");
     }
   };
 
