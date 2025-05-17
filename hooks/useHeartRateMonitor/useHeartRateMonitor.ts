@@ -57,8 +57,6 @@ export function useHeartRateMonitor(): UseHeartRateMonitor {
     setHeartRateLatest(value);
   };
 
-  console.log(heartRate);
-
   function onCharacteristicUpdate(ev: UseBluetoothCharacteristicUpdateEvent) {
     parseHeartRateValue(ev.value);
   }
