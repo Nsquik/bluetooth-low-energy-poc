@@ -10,12 +10,18 @@ import { useTheme } from "@/hooks/useTheme";
 import { useRouter } from "expo-router";
 import { useEffect } from "react";
 import { StyleSheet } from "react-native";
+import { LineChart } from "react-native-gifted-charts";
 
 export default function HeartRateScreen() {
   const { navigate } = useRouter();
   const { color } = useTheme();
-  const { isInitializing, isConnected, startMonitoring, heartRateLatest } =
-    useHeartRateMonitor();
+  const {
+    isInitializing,
+    isConnected,
+    startMonitoring,
+    heartRateLatest,
+    heartRate,
+  } = useHeartRateMonitor();
 
   useEffect(() => {
     startMonitoring();
@@ -54,9 +60,51 @@ export default function HeartRateScreen() {
   return (
     <ThemedView style={styles.container}>
       {loader}
-      <ThemedText type="title">{heartRateLatest}</ThemedText>
-      <ThemedText type="small">bpm</ThemedText>
+      <ThemedView
+        style={{
+          alignItems: "center",
+          justifyContent: "center",
+          marginTop: 100,
+        }}
+      >
+        <ThemedText type="title">{heartRateLatest}</ThemedText>
+        <ThemedText type="small">bpm</ThemedText>
+      </ThemedView>
+
       {heart}
+
+      <ThemedView style={{ height: 100, alignSelf: "stretch" }}>
+        {heartRate.length > 2 ? (
+          <LineChart
+            data={heartRate}
+            thickness={2}
+            color={color.accent}
+            hideRules
+            yAxisColor="transparent"
+            xAxisColor="transparent"
+            textColor={color.text}
+            dataPointsColor="transparent"
+            yAxisTextStyle={{ width: 0 }}
+            yAxisLabelContainerStyle={{ width: 0 }}
+            yAxisLabelWidth={0}
+            xAxisLabelTextStyle={{ color: "red" }}
+            startFillColor={color.accent}
+            endFillColor={color.background}
+            startOpacity={0.16}
+            endOpacity={0}
+            noOfSections={1}
+            stepValue={10}
+            maxValue={255}
+            showValuesAsDataPointsText
+            onDataChangeAnimationDuration={400}
+            scrollAnimation
+            scrollToEnd
+            animateOnDataChange
+            height={100}
+            disableScroll
+          />
+        ) : null}
+      </ThemedView>
     </ThemedView>
   );
 }
@@ -66,7 +114,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     alignContent: "center",
-    justifyContent: "center",
+    justifyContent: "space-between",
   },
   disconnectedContainer: {
     padding: SPACING.md,

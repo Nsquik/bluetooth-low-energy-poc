@@ -46,9 +46,18 @@ export function useHeartRateMonitor(): UseHeartRateMonitor {
       date: new Date(),
       value,
     };
-    setHeartRate((prevHeartRate) => [...prevHeartRate, point]);
+    setHeartRate((prev) => {
+      if (prev.length < 1000) {
+        return [...prev, point];
+      } else {
+        return [...prev.slice(-15), point];
+      }
+    });
+
     setHeartRateLatest(value);
   };
+
+  console.log(heartRate);
 
   function onCharacteristicUpdate(ev: UseBluetoothCharacteristicUpdateEvent) {
     parseHeartRateValue(ev.value);
