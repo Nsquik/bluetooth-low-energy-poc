@@ -53,7 +53,8 @@
           "isBleRequired": true,
           "bluetoothAlwaysPermission": "Allow $(PRODUCT_NAME) to connect to bluetooth devices"
         }
-      ]
+      ],
+      "./plugins/bluetooth-central"
     ],
     "experiments": {
       "typedRoutes": true
