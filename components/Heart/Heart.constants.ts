@@ -8,7 +8,7 @@ export const heart = Skia.Path.MakeFromSVGString(
 export const CANVAS_WIDTH = 300;
 export const CANVAS_HEIGHT = 300;
 
-const PADDING = SPACING.xxxl;
+const PADDING = SPACING.xxl;
 
 export const CENTER_DIMENSIONS = { x: CANVAS_WIDTH / 2, y: CANVAS_HEIGHT / 2 };
 

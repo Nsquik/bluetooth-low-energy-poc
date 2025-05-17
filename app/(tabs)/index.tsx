@@ -1,5 +1,6 @@
 import { Button } from "@/components/Button";
 import { Heart } from "@/components/Heart";
+import { HeartMonitorChart } from "@/components/HeartMonitorChart";
 import { Icon } from "@/components/Icon";
 import { Loader } from "@/components/Loader";
 import { ThemedText } from "@/components/ThemedText";
@@ -10,7 +11,6 @@ import { useTheme } from "@/hooks/useTheme";
 import { useRouter } from "expo-router";
 import { useEffect } from "react";
 import { StyleSheet } from "react-native";
-import { LineChart } from "react-native-gifted-charts";
 
 export default function HeartRateScreen() {
   const { navigate } = useRouter();
@@ -55,7 +55,7 @@ export default function HeartRateScreen() {
 
   const loader = isInitializing ? <Loader size="small" /> : null;
 
-  const heart = heartRateLatest ? <Heart bpm={heartRateLatest} /> : null;
+  const heart = heartRateLatest ? <Heart bpm={heartRateLatest.value} /> : null;
 
   return (
     <ThemedView style={styles.container}>
@@ -72,39 +72,7 @@ export default function HeartRateScreen() {
       </ThemedView>
 
       {heart}
-
-      <ThemedView style={{ height: 100, alignSelf: "stretch" }}>
-        {heartRateList.length > 2 ? (
-          <LineChart
-            data={heartRateList}
-            thickness={2}
-            color={color.accent}
-            hideRules
-            yAxisColor="transparent"
-            xAxisColor="transparent"
-            textColor={color.text}
-            dataPointsColor="transparent"
-            yAxisTextStyle={{ width: 0 }}
-            yAxisLabelContainerStyle={{ width: 0 }}
-            yAxisLabelWidth={0}
-            xAxisLabelTextStyle={{ color: "red" }}
-            startFillColor={color.accent}
-            endFillColor={color.background}
-            startOpacity={0.16}
-            endOpacity={0}
-            noOfSections={1}
-            stepValue={10}
-            maxValue={255}
-            showValuesAsDataPointsText
-            onDataChangeAnimationDuration={400}
-            scrollAnimation
-            scrollToEnd
-            animateOnDataChange
-            height={100}
-            disableScroll
-          />
-        ) : null}
-      </ThemedView>
+      <HeartMonitorChart heartRateList={heartRateList} />
     </ThemedView>
   );
 }
@@ -122,6 +90,11 @@ const styles = StyleSheet.create({
     width: "100%",
     alignItems: "center",
     justifyContent: "space-between",
+  },
+  hrContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: SPACING.xxxl,
   },
   hrText: {
     margin: SPACING.xl,
