@@ -31,6 +31,20 @@ A mobile application that connects to any heart rate strap or sensor supporting 
 3. Support connecting to multiple devices
 
 
+# How to run
+   ```bash
+   npx expo run:ios
+   ```
+
+  ```bash
+  npx expo run:android
+   ```
+
+
+
+
+
+
 
 
 
