@@ -21,6 +21,8 @@ export const COLOR = {
     primary: "#ef3f91",
     secondary: "#84a3e6",
     accent: "#5a63dd",
+    heartPrimary: "#D52327",
+    heartSecondary: "#3f0a0b",
   },
   dark: {
     text: "#f7eafa",
@@ -29,5 +31,7 @@ export const COLOR = {
     primary: "#3d002e",
     secondary: "#c89ecf",
     accent: "#ef9aff",
+    heartPrimary: "#D52327",
+    heartSecondary: "#3f0a0b",
   },
 };

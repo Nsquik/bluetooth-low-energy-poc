@@ -1,4 +1,5 @@
 import { Button } from "@/components/Button";
+import { Heart } from "@/components/Heart";
 import { Icon } from "@/components/Icon";
 import { Loader } from "@/components/Loader";
 import { ThemedText } from "@/components/ThemedText";
@@ -22,7 +23,7 @@ export default function HeartRateScreen() {
 
   if (!isConnected) {
     return (
-      <ThemedView style={styles.container}>
+      <ThemedView style={styles.disconnectedContainer}>
         <ThemedText type="title" style={[styles.title, styles.text]}>
           Heart rate sensor not connected
         </ThemedText>
@@ -38,7 +39,7 @@ export default function HeartRateScreen() {
             onPress={() => {
               navigate("/device");
             }}
-            text={"Connect device"}
+            text="Connect device"
             style={styles.devicesButton}
           />
         </ThemedView>
@@ -46,23 +47,35 @@ export default function HeartRateScreen() {
     );
   }
 
+  const loader = isInitializing ? <Loader size="small" /> : null;
+
+  const heart = heartRateLatest ? <Heart bpm={heartRateLatest} /> : null;
+
   return (
     <ThemedView style={styles.container}>
-      {isInitializing ? <Loader size={"large"} /> : null}
-      <ThemedText type="title" style={styles.text}>
-        {heartRateLatest}
-      </ThemedText>
+      {loader}
+      <ThemedText>{heartRateLatest}</ThemedText>
+      {heart}
     </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    alignItems: "center",
+    alignContent: "center",
+    justifyContent: "center",
+  },
+  disconnectedContainer: {
     padding: SPACING.md,
     flex: 1,
     width: "100%",
     alignItems: "center",
     justifyContent: "space-between",
+  },
+  hrText: {
+    margin: SPACING.xl,
   },
   text: {
     textAlign: "center",

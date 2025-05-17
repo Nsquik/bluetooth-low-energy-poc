@@ -60,12 +60,12 @@
     "extra": {
       "router": {},
       "eas": {
-        "projectId": "780d640d-8b8d-4b2b-bd0e-5a1c112a79ff"
+        "projectId": "d6bd6c33-770d-450a-97bd-1ff5dc682a58"
       }
     },
     "runtimeVersion": "1.0.0",
     "updates": {
-      "url": "https://u.expo.dev/780d640d-8b8d-4b2b-bd0e-5a1c112a79ff"
+      "url": "https://u.expo.dev/d6bd6c33-770d-450a-97bd-1ff5dc682a58"
     }
   }
 }
