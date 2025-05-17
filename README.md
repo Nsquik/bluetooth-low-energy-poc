@@ -1,50 +1,29 @@
-# Welcome to your Expo app 👋
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+https://github.com/user-attachments/assets/bf551bfe-985f-4de6-a0f8-d2c72d41644d
 
-## Get started
 
-1. Install dependencies
+# Universal BLE Heart Rate Monitor App
+Aplikacja mobilna umożliwiająca połączenie z dowolnym paskiem lub czujnikiem tętna obsługującym Bluetooth Low Energy (BLE) oraz standardowy profil Heart Rate. Testowana m.in. z GEOID HS500, ale działa z większością pasków dostępnych na rynku.
 
-   ```bash
-   npm install
-   ```
 
-2. Start the app
+# Funkcjonalności
+1. Automatyczne wykrywanie urządzeń BLE obsługujących Heart Rate Service *(0x180D)*
+2. Połączenie i subskrypcja powiadomień z charakterystyki Heart Rate Measurement *(0x2A37)*
+3. Wyświetlanie aktualnego tętna w czasie rzeczywistym (BPM)
+4. Obsługa pracy w tle (Android: foreground service, iOS: background mode bluetooth-central)
+5. Zapis historii pomiarów (Tylko do wyświetlania wykresu)
+6. Prosty, przejrzysty interfejs użytkownika
+7. Piękna dynamiczna animacja serca. (wygląd, prędkość itd. zależna od aktualnego pulsu)
+8. Obsługa uprawnień
 
-   ```bash
-   npx expo start
-   ```
+# Wykorzystane technologie
+1. Bluetooth Low Energy (BLE)
+4. Biblioteka BLE: react-native-ble-manager
+6. React Native z EXPO
+7. React Native SKIA + Reanimated do animacji serca
+8. React Native Gifted Charts do wykresu pulsu
 
-In the output, you'll find options to open the app in a
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
-## Get a fresh project
 
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
